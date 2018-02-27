@@ -3,6 +3,11 @@
 
 Simple, dependable, easy to reason about.
 
+## Why Stubby?
+Quick answer: I'm currently working in an Elixir 1.3 app and [Mox only supports 1.5](https://github.com/plataformatec/mox/issues/25)😆  
+
+Long answer: After realizing I couldn't use Mox, I came up with a fairly simple way to roll my own stubbing solution using ETS. 👍
+
 ## Installation
 
 If [available in Hex](https://hex.pm/docs/publish), the package can be installed
