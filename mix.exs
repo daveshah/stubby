@@ -11,7 +11,7 @@ defmodule Stubby.Mixfile do
       start_permanent: Mix.env == :prod,
       package: package(),
       description: description(),
-      docs: docs()
+      deps: deps()
     ]
   end
 
@@ -21,8 +21,8 @@ defmodule Stubby.Mixfile do
     ]
   end
 
-  defp docs do
-    {:ex_doc, ">= 0.0.0", only: :dev}
+  defp deps do
+    [{:ex_doc, ">= 0.0.0", only: :dev}]
   end
 
   defp package do
