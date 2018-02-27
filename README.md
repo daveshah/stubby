@@ -3,6 +3,23 @@
 
 Simple, dependable, easy to reason about.
 
+## Installation
+
+If [available in Hex](https://hex.pm/docs/publish), the package can be installed
+by adding `stubby` to your list of dependencies in `mix.exs`:
+
+```elixir
+def deps do
+  [
+    {:stubby, "~> 0.1.0", only: :test}
+  ]
+end
+```
+
+Documentation can be generated with [ExDoc](https://github.com/elixir-lang/ex_doc)
+and published on [HexDocs](https://hexdocs.pm). Once published, the docs can
+be found at [https://hexdocs.pm/stubby](https://hexdocs.pm/stubby).
+
 # Usage
 ```elixir
 # Start by defining your Behaviour
@@ -47,20 +64,5 @@ end
 
 ```
 
-## Installation
 
-If [available in Hex](https://hex.pm/docs/publish), the package can be installed
-by adding `stubby` to your list of dependencies in `mix.exs`:
-
-```elixir
-def deps do
-  [
-    {:stubby, "~> 0.1.0"}
-  ]
-end
-```
-
-Documentation can be generated with [ExDoc](https://github.com/elixir-lang/ex_doc)
-and published on [HexDocs](https://hexdocs.pm). Once published, the docs can
-be found at [https://hexdocs.pm/stubby](https://hexdocs.pm/stubby).
 
