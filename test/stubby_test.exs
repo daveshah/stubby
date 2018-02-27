@@ -13,18 +13,17 @@ defmodule StubbyTest do
   end
 
   defmodule FakeStub do
-    @behaviour FakeBehaviour
-    @behaviour FakeBehaviour2
-    use Stubby
+    use Stubby, for: [StubbyTest.FakeBehaviour, StubbyTest.FakeBehaviour2]
   end
 
   describe "collect_callbacks/1" do
     test "returning all the callbacks within a module" do
-      assert Stubby.collect_callbacks(FakeStub) ==
+      assert Stubby.collect_callbacks([FakeBehaviour, FakeBehaviour2]) ==
              [fake_function: 2, fake_function: 1,
               fake_function2: 2, fake_function2: 1]
     end
   end
+
   describe "function_signature/1" do
     test "returns a signature string with a matching arity" do
       assert Stubby.function_signatature(0) == "()"
@@ -33,15 +32,22 @@ defmodule StubbyTest do
     end
   end
 
+  describe "function_gen/1" do
+    test "returns a function as a string" do
+      assert Stubby.function_gen({:foo, 2}) ==
+      """
+        def foo(arg1,arg2) do
+          :ets.lookup(__MODULE__, :foo)[:foo].(arg1,arg2)
+        end
+      """
+    end
+  end
 
-  # TODO: In Elixir version 1.3 callbacks can be found in module_info
-  # in Elixir ??? they're in behaviour_info
-  # NOTE: these are NOT public functions. These are
-  # exports found from
-  # Stubby.FakeBehaviour.behaviour_info(:callbacks)
-  # :application.which_applications can give me the info I need...
   test "function generation" do
-    #require IEx; IEx.pry
-    FakeStub
+    FakeStub.setup
+
+    FakeStub.stub(:fake_function, fn _ -> "works!" end)
+
+    assert FakeStub.fake_function("anything") == "works!"
   end
 end

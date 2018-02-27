@@ -5,12 +5,10 @@ defmodule Stubby do
 
   @doc """
   """
-  # TODO: take erlang version into consideration
-  def collect_callbacks(module) do
-    module.module_info[:attributes]
-    |> Keyword.take([:behaviour])
-    |> Keyword.values
-    |> List.flatten
+  #TODO: take erlang version into consideration
+  # :application.which_applications can give me the info I need.
+  def collect_callbacks(behaviours) do
+    behaviours
     |> Enum.reduce([], fn(b, acc) ->
       acc ++ b.behaviour_info(:callbacks) end)
   end
@@ -25,19 +23,42 @@ defmodule Stubby do
     "(#{sig})"
   end
 
-  defmacro __using__(_args) do
-    #TODO: generate (arg1, arg2,... ) based on arity
-    # generate ets calls based on arity
+  def function_gen({name, arity}) do
     """
-    def foo(a,b) do
-      IO.puts a
-      IO.puts b
-    end
+      def #{name}#{function_signatature(arity)} do
+        :ets.lookup(__MODULE__, :#{name})[:#{name}].#{function_signatature(arity)}
+      end
+    """
+  end
 
-    def bar() do
-      IO.puts "bar"
-    end
+  def setup_funcs() do
+    # TODO: setup_all with context...
     """
-    |> Code.string_to_quoted!
+      def setup() do
+        :ets.new(__MODULE__, [:set, :private, :named_table])
+      end
+
+      # TODO: stub with the context
+      def setup(context) when is_atom(context) do
+        :ets.new(context, [:set, :private, :named_table])
+      end
+
+      def stub(function_name, function) when is_atom(function_name) do
+        :ets.insert(__MODULE__, {function_name, function})
+      end
+    """
+  end
+
+  def gen_func(behaviours) do
+    behaviours
+    |> Stubby.collect_callbacks
+    |> Enum.reduce(setup_funcs(),
+        fn (c, acc) -> acc <> Stubby.function_gen(c) end)
+    |> String.trim
+  end
+
+  defmacro __using__(args) do
+    {[for: b], _} = Macro.to_string(args) |> Code.eval_string
+    Stubby.gen_func(b) |> Code.string_to_quoted!
   end
 end
