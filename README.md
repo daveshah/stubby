@@ -10,8 +10,7 @@ Long answer: After realizing I couldn't use Mox, I came up with a fairly simple 
 
 ## Installation
 
-If [available in Hex](https://hex.pm/docs/publish), the package can be installed
-by adding `stubby` to your list of dependencies in `mix.exs`:
+Add `stubby` to your list of dependencies in `mix.exs`:
 
 ```elixir
 def deps do
@@ -20,10 +19,6 @@ def deps do
   ]
 end
 ```
-
-Documentation can be generated with [ExDoc](https://github.com/elixir-lang/ex_doc)
-and published on [HexDocs](https://hexdocs.pm). Once published, the docs can
-be found at [https://hexdocs.pm/stubby](https://hexdocs.pm/stubby).
 
 # Usage
 ```elixir
