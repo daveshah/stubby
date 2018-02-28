@@ -20,8 +20,10 @@ defmodule StubbyTest do
     test "returning all the callbacks within a module" do
       callbacks = Stubby.collect_callbacks([FakeBehaviour, FakeBehaviour2])
 
-      assert [fake_function: 2, fake_function: 1,
-              fake_function2: 2, fake_function2: 1] = callbacks
+      assert {:fake_function, 1} in callbacks
+      assert {:fake_function, 1} in callbacks
+      assert {:fake_function2, 1} in callbacks
+      assert {:fake_function2, 2} in callbacks
     end
   end
 

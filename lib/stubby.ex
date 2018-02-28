@@ -3,10 +3,6 @@ defmodule Stubby do
   Documentation for Stubby.
   """
 
-  @doc """
-  """
-  #TODO: take erlang version into consideration
-  # :application.which_applications can give me the info I need.
   def collect_callbacks(behaviours) do
     behaviours
     |> Enum.reduce([], fn(b, acc) ->
@@ -32,15 +28,9 @@ defmodule Stubby do
   end
 
   def setup_funcs() do
-    # TODO: setup_all with context...
     """
       def setup() do
         :ets.new(__MODULE__, [:set, :private, :named_table])
-      end
-
-      # TODO: stub with the context
-      def setup(context) when is_atom(context) do
-        :ets.new(context, [:set, :private, :named_table])
       end
 
       def stub(function_name, function) when is_atom(function_name) do
