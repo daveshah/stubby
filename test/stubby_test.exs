@@ -40,17 +40,22 @@ defmodule StubbyTest do
       assert Stubby.function_gen({:foo, 2}) ==
       """
         def foo(arg1,arg2) do
-          :ets.lookup(__MODULE__, :foo)[:foo].(arg1,arg2)
+          :ets.lookup(unique_name(), :foo)[:foo].(arg1,arg2)
         end
       """
     end
   end
 
-  test "function generation" do
-    FakeStub.setup
+  describe "function generation" do
+    setup do
+      FakeStub.setup
+      :ok
+    end
 
-    FakeStub.stub(:fake_function, fn _ -> "works!" end)
+    test "stubbing functions" do
+      FakeStub.stub(:fake_function, fn _ -> "works!" end)
 
-    assert FakeStub.fake_function("anything") == "works!"
+      assert FakeStub.fake_function("anything") == "works!"
+    end
   end
 end
