@@ -1,3 +1,5 @@
+![](https://travis-ci.org/daveshah/stubby.svg?branch=master)
+
 # Stubby
 ![](https://upload.wikimedia.org/wikipedia/commons/4/44/Sergeant_Stubby.jpg)
 
