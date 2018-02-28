@@ -39,7 +39,7 @@ defmodule Stubby do
     """
   end
 
-  def gen_func(behaviours) do
+  def define_functions_for(behaviours) do
     behaviours
     |> Stubby.collect_callbacks
     |> Enum.reduce(setup_funcs(),
@@ -48,7 +48,11 @@ defmodule Stubby do
   end
 
   defmacro __using__(args) do
-    {[for: b], _} = Macro.to_string(args) |> Code.eval_string
-    Stubby.gen_func(b) |> Code.string_to_quoted!
+    {[for: behaviours], _} =
+      Macro.to_string(args)
+      |> Code.eval_string
+
+    Stubby.define_functions_for(behaviours)
+    |> Code.string_to_quoted!
   end
 end
