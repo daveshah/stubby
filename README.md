@@ -46,13 +46,13 @@ end
 ### Use Stubby within a stub module, specifying which Behaviours you intend on stubbing
 ```elixir
 # This stub API can be set in your config/test.exs
-defmodule StubApi do
+defmodule MyApp.StubApi do
   use Stubby, for: [Api] 
   # NOTE: Multiple behaviours can be used with `use Stubby, for: [Behaviour1, Behaviour2, ...]`
 end
 
 # This is the API module that will be set in config/prod.exs
-defmodule RealApi do
+defmodule MyApp.RealApi do
   @behaviour Api
   ...
 end
@@ -68,7 +68,16 @@ defmodule MyAppWeb.MyController do
   
   ...
 end
+
+
+# In config/test.exs
+config :my_app, :api, MyApp.StubApi
+
+# In config/prod.exs
+config :my_app, :api, MyApp.RealApi
+
 ```
+
 
 ### Test with Stubby!
 ```elixir
