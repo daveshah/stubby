@@ -15,6 +15,14 @@ I was happy when José Valim posted his opinions on [Mocks and Explicit Contract
 
 This is where stubbing (and Stubby) helps :)
 
+## Why Not Something Else?
+I think constraints are a good thing when it comes to design (so long as you understand how constraints can impact design and meet your needs for your intended design). That said, limiting stubby to stubbing only imposes a set of constraints.  
+
+If you're looking for more or think this isn't for you, checkout [mox](https://github.com/plataformatec/mox).
+
+## Some recommendations
+Keep in mind that, when stubbing (and mocking), you're replacing the real implementation with a fake implementation. That said, it's best to ensure that you still have a good testing strategy in place to run your tests against codepaths that traverse the entire system using real implentations. These need not be the bulk of your tests and don't necessarilly have to be run as frequent as your other tests, but do not neglect these tests.
+It's all about finding a balance and understanding the what, why, and how your testing what you're testing.
 
 ## Installation
 
@@ -79,6 +87,18 @@ defmodule MyAppWeb.MyController do
 end
 ```
 
+or inject collaborating modules:
+
+```elixir
+defmodule MyApp.AwesomeContext do
+
+  def get_all_the_awesome(query, api \\ MyApp.RealApi) do
+    api.get(query)
+    |> some_other_stuff(:that_is_awesome)
+  end
+end
+```
+
 ### Test with Stubby!
 ```elixir
 defmodule MyAppWeb.MyControllerTest do
@@ -101,6 +121,26 @@ defmodule MyAppWeb.MyControllerTest do
 end
 
 ```
+
+```elixir
+defmodule MyApp.AwesomeContextTest do
+  use ExUnit.Case
+  alias MyApp.AwesomeContext
+  
+  setup do
+    # Call setup prior to stubbing
+    StubApi.setup
+    :ok
+  end
+  
+  test "a failing API call" do
+    # Stub away!
+    StubApi.stub(:all, fn -> {:error, "¯\_(ツ)_/¯"} end)
+    
+    assert {:error, "👎" } = AwesomeContext.get_all_the_awesome("👍", StubApi)
+  end
+end 
+```
 Once you call `setup/0` on your Stub module, Stubby will generate functions that match the name and arity of what you've defined in your behaviours. You can stub out these functions by by calling `stub/2`.
 
 The `stub/2` function takes, as its first argument a name of the function you're stubbing and as it's second argument, an anonymous stub function. 
@@ -109,6 +149,22 @@ As an example, if I were stubbing a `get/1` function, this would look something 
 ```elixir
 StubApi.stub(:get, fn _unused -> "some output" end)
 ```
+
+
+## License
+Copyright 2017 Dave Shah
+
+  Licensed under the Apache License, Version 2.0 (the "License");
+  you may not use this file except in compliance with the License.
+  You may obtain a copy of the License at
+
+      http://www.apache.org/licenses/LICENSE-2.0
+
+  Unless required by applicable law or agreed to in writing, software
+  distributed under the License is distributed on an "AS IS" BASIS,
+  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+  See the License for the specific language governing permissions and
+  limitations under the License.
 
 
 
