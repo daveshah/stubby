@@ -60,16 +60,6 @@ end
 
 ### Inject your controller
 ```elixir
-defmodule MyAppWeb.MyController do
-  use MyAppWeb :controller
-  
-  # 'Inject' your API behaviour 
-  @api Application.get_env(:my_app, :api)
-  
-  ...
-end
-
-
 # In config/test.exs
 config :my_app, :api, MyApp.StubApi
 
@@ -78,6 +68,16 @@ config :my_app, :api, MyApp.RealApi
 
 ```
 
+```elixir
+defmodule MyAppWeb.MyController do
+  use MyAppWeb :controller
+  
+  # 'Inject' your API behaviour 
+  @api Application.get_env(:my_app, :api)
+  
+  ...
+end
+```
 
 ### Test with Stubby!
 ```elixir
