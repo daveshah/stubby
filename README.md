@@ -152,7 +152,7 @@ StubApi.stub(:get, fn _unused -> "some output" end)
 
 
 ## License
-Copyright 2017 Dave Shah
+Copyright 2018 Dave Shah
 
   Licensed under the Apache License, Version 2.0 (the "License");
   you may not use this file except in compliance with the License.
