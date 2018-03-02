@@ -26,12 +26,12 @@ It's all about finding a balance and understanding the what, why, and how your t
 
 ## Installation
 
-Stubby is on Hex so just add Stubby to your list of dependencies in `mix.exs`:
+[Stubby is on Hex](https://hex.pm/packages/stubby) so just add Stubby to your list of dependencies in `mix.exs`:
 
 ```elixir
 def deps do
   [
-    {:stubby, "~> 0.1.0", only: :test}
+    {:stubby, "~> 0.2.0", only: :test}
   ]
 end
 ```
