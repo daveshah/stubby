@@ -16,6 +16,16 @@ defmodule StubbyTest do
     use Stubby, for: [StubbyTest.FakeBehaviour, StubbyTest.FakeBehaviour2]
   end
 
+  defmodule TestModule do
+    def some_function, do: :ok
+    def some_function(arg), do: {:ok, arg}
+    def some_other_function, do: :ok
+  end
+
+  defmodule TestModuleStub do
+    use Stubby, module: StubbyTest.TestModule
+  end
+
   describe "collect_callbacks/1" do
     test "returning all the callbacks within a module" do
       callbacks = Stubby.collect_callbacks([FakeBehaviour, FakeBehaviour2])
@@ -46,7 +56,7 @@ defmodule StubbyTest do
     end
   end
 
-  describe "function generation" do
+  describe "behaviour based function generation" do
     setup do
       FakeStub.setup
       :ok
@@ -56,6 +66,19 @@ defmodule StubbyTest do
       FakeStub.stub(:fake_function, fn _ -> "works!" end)
 
       assert FakeStub.fake_function("anything") == "works!"
+    end
+  end
+
+  describe "module based function generation" do
+    setup do
+      TestModuleStub.setup
+      :ok
+    end
+
+    test "stubbing functions" do
+      TestModuleStub.stub(:some_function, fn (thing) -> "#{thing} works!" end)
+
+      assert TestModuleStub.some_function("anything") == "anything works!"
     end
   end
 end
