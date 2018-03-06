@@ -34,13 +34,6 @@ defmodule Stubby do
   """
 
   @doc false
-  def collect_callbacks(behaviours) do
-    behaviours
-    |> Enum.reduce([], fn(b, acc) ->
-      acc ++ b.behaviour_info(:callbacks) end)
-  end
-
-  @doc false
   def function_signatature(0), do: "()"
   @doc false
   def function_signatature(arity) do
@@ -81,20 +74,40 @@ defmodule Stubby do
   end
 
   @doc false
-  def define_functions_for(behaviours) do
+  def collect_callbacks(behaviours) do
     behaviours
-    |> Stubby.collect_callbacks
+    |> Enum.reduce([], fn(b, acc) ->
+      b.behaviour_info(:callbacks) ++ acc end)
+  end
+
+  @doc false
+  def define_functions_for(behaviours) when is_list(behaviours) do
+    behaviours
+    |> Stubby.collect_callbacks()
+    |> do_define_functions_for()
+  end
+
+  @doc false
+  def define_functions_for(module) do
+    do_define_functions_for(module.__info__(:functions))
+  end
+
+  def do_define_functions_for(function_list) do
+    function_list
     |> Enum.reduce(setup_funcs(),
-        fn (c, acc) -> acc <> Stubby.function_gen(c) end)
+    fn (c, acc) -> acc <> Stubby.function_gen(c) end)
     |> String.trim
   end
 
   defmacro __using__(args) do
-    {[for: behaviours], _} =
-      Macro.to_string(args)
-      |> Code.eval_string
+    stub_ops = Macro.to_string(args) |> Code.eval_string
 
-    Stubby.define_functions_for(behaviours)
+    case stub_ops do
+      {[for: behaviours], _} ->
+        Stubby.define_functions_for(behaviours)
+      {[module: module], _} ->
+        Stubby.define_functions_for(module)
+    end
     |> Code.string_to_quoted!
   end
 end
