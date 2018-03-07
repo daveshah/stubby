@@ -65,10 +65,12 @@ defmodule Stubby do
 
       def setup do
         :ets.new(unique_name(), [:set, :private, :named_table])
+        :ok
       end
 
       def stub(function_name, function) when is_atom(function_name) do
         :ets.insert(unique_name(), {function_name, function})
+        :ok
       end
     """
   end

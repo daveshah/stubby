@@ -59,7 +59,6 @@ defmodule StubbyTest do
   describe "behaviour based function generation" do
     setup do
       FakeStub.setup
-      :ok
     end
 
     test "stubbing functions" do
@@ -72,12 +71,10 @@ defmodule StubbyTest do
   describe "module based function generation" do
     setup do
       TestModuleStub.setup
-      :ok
+      TestModuleStub.stub(:some_function, fn (thing) -> "#{thing} works!" end)
     end
 
     test "stubbing functions" do
-      TestModuleStub.stub(:some_function, fn (thing) -> "#{thing} works!" end)
-
       assert TestModuleStub.some_function("anything") == "anything works!"
     end
   end
