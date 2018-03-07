@@ -50,7 +50,11 @@ defmodule StubbyTest do
       assert Stubby.function_gen({:foo, 2}) ==
       """
         def foo(arg1,arg2) do
-          :ets.lookup(unique_name(), :foo)[:foo].(arg1,arg2)
+          try do
+            :ets.lookup(unique_name(), :foo)[:foo].(arg1,arg2)
+          rescue
+            ArgumentError -> raise Stubby.Error
+          end
         end
       """
     end
@@ -76,6 +80,15 @@ defmodule StubbyTest do
 
     test "stubbing functions" do
       assert TestModuleStub.some_function("anything") == "anything works!"
+    end
+  end
+
+  describe "error messages" do
+    test "when stubs haven't been setup" do
+      assert_raise(Stubby.Error, "Has setup/0 been called before stubbing?",
+        fn ->
+          FakeStub.fake_function("setup hasn't been called")
+        end)
     end
   end
 end
