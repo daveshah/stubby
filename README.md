@@ -18,6 +18,8 @@ This is where stubbing (and Stubby) helps :)
 ## Why Not Something Else?
 I think constraints are a good thing when it comes to design (so long as you understand how constraints can impact design and meet your needs for your intended design). That said, limiting stubby to stubbing only imposes a set of constraints.  
 
+I'm also okay with ad-hock mocks. The library I like the most (mox) doesn't support ad-hoc mocks and requires that each mock adheres to the contract specified by a behaviour. I think this is great, but I'm also okay with not specifying a behaviour all of the time. Stubby allows you to create stubs without a beahviour 👍
+
 If you're looking for more or think this isn't for you, checkout [mox](https://github.com/plataformatec/mox).
 
 ## Some recommendations
@@ -31,17 +33,18 @@ It's all about finding a balance and understanding the what, why, and how your t
 ```elixir
 def deps do
   [
-    {:stubby, "~> 0.2.0", only: :test}
+    {:stubby, "~> 0.3.0", only: :test}
   ]
 end
 ```
 
-# Usage
+## Usage
 If you haven't yet, please read [Mocks and Explicit Contracts](http://blog.plataformatec.com.br/2015/10/mocks-and-explicit-contracts/)
 
 Using Stubby follows similiar patterns found in this post.
 
-### Start by defining an [Elixir Behaviour](https://elixir-lang.org/getting-started/typespecs-and-behaviours.html)
+
+### With an [Elixir Behaviour](https://elixir-lang.org/getting-started/typespecs-and-behaviours.html)
 ```elixir
 # Both your 'real' API and Stub API will implement this behaviour.
 defmodule Api do
@@ -51,7 +54,7 @@ defmodule Api do
 end
 ```
 
-### Use Stubby within a stub module, specifying which Behaviours you intend on stubbing
+#### Use Stubby within a stub module, specifying which Behaviours you intend on stubbing
 ```elixir
 # This stub API can be set in your config/test.exs
 defmodule MyApp.StubApi do
@@ -63,6 +66,13 @@ end
 defmodule MyApp.RealApi do
   @behaviour Api
   ...
+end
+```
+### With a plain-old-module
+```elixir
+# This stub API can be set in your config/test.exs or defined in your test
+defmodule MyApp.StubModule do
+  use Stubby, module: [SomeRealModule] 
 end
 ```
 
@@ -107,7 +117,6 @@ defmodule MyAppWeb.MyControllerTest do
   setup do
     # Call setup prior to stubbing
     StubApi.setup
-    :ok
   end
   
   test "a failing API call" do
