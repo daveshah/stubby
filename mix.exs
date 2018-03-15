@@ -1,7 +1,7 @@
 defmodule Stubby.Mixfile do
   use Mix.Project
 
-  @version "0.3.0"
+  @version "0.4.0"
 
   def project do
     [
@@ -35,7 +35,7 @@ defmodule Stubby.Mixfile do
 
   defp description do
     """
-    A simple stubbing library that aligns with http://blog.plataformatec.com.br/2015/10/mocks-and-explicit-contracts/ and attempts to support earlier versions of Elixir.
+    A simple stubbing library 👍 .
     """
   end
 end

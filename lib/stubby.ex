@@ -1,4 +1,8 @@
 defmodule Stubby do
+  defmodule Error do
+    defexception message: "Has setup/0 been called before stubbing?"
+  end
+
   @moduledoc """
   Usage
 
@@ -49,7 +53,11 @@ defmodule Stubby do
   def function_gen({name, arity}) do
     """
       def #{name}#{function_signatature(arity)} do
-        :ets.lookup(unique_name(), :#{name})[:#{name}].#{function_signatature(arity)}
+        try do
+          :ets.lookup(unique_name(), :#{name})[:#{name}].#{function_signatature(arity)}
+        rescue
+          ArgumentError -> raise Stubby.Error
+        end
       end
     """
   end
